@@ -1432,6 +1432,15 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		vscode.postMessage({ type: "condenseTaskContextRequest", text: taskId })
 	}
 
+	const handleCompactAndSummarize = (taskId: string) => {
+		if (isCondensing || sendingDisabled) {
+			return
+		}
+		setIsCondensing(true)
+		setSendingDisabled(true)
+		vscode.postMessage({ type: "compactAndSummarizeRequest", text: taskId })
+	}
+
 	return (
 		<div className={isHidden ? "hidden" : "fixed top-0 left-0 right-0 bottom-0 flex flex-col overflow-hidden"}>
 			{showAnnouncement && <Announcement hideAnnouncement={hideAnnouncement} />}
@@ -1447,6 +1456,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 						contextTokens={apiMetrics.contextTokens}
 						buttonsDisabled={sendingDisabled}
 						handleCondenseContext={handleCondenseContext}
+						handleCompactAndSummarize={handleCompactAndSummarize}
 						onClose={handleTaskCloseButtonClick}
 						// kilocode_change start
 						groupedMessages={groupedMessages}
