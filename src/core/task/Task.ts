@@ -633,6 +633,51 @@ export class Task extends EventEmitter<ClineEvents> {
 		)
 	}
 
+	public async getSummaryForNewChat(): Promise<string> {
+		const systemPrompt = await this.getSystemPrompt()
+
+		// Get condensing configuration
+		const state = await this.providerRef.deref()?.getState()
+		const customCondensingPrompt = state ? (state as any).customCondensingPrompt : undefined
+		const condensingApiConfigId = state ? (state as any).condensingApiConfigId : undefined
+		const listApiConfigMeta = state ? (state as any).listApiConfigMeta : undefined
+
+		// Determine API handler to use
+		let condensingApiHandler: ApiHandler | undefined
+		if (condensingApiConfigId && listApiConfigMeta && Array.isArray(listApiConfigMeta)) {
+			const matchingConfig = listApiConfigMeta.find((config: any) => config.id === condensingApiConfigId)
+			if (matchingConfig) {
+				const profile = await this.providerRef.deref()?.providerSettingsManager.getProfile({
+					id: condensingApiConfigId,
+				})
+				if (profile && profile.apiProvider) {
+					condensingApiHandler = buildApiHandler(profile)
+				}
+			}
+		}
+
+		const { contextTokens: prevContextTokens } = this.getTokenUsage()
+		const { summary, error } = await summarizeConversation(
+			this.apiConversationHistory,
+			this.api,
+			systemPrompt,
+			this.taskId,
+			prevContextTokens,
+			false, // manual trigger
+			customCondensingPrompt,
+			condensingApiHandler,
+		)
+
+		if (error || !summary) {
+			// Fallback: create a simple summary from the original task
+			const originalTask = this.apiConversationHistory.find(msg => msg.role === "user")
+			return originalTask?.content?.toString() || "Continue the previous conversation"
+		}
+
+		// Format the summary as a user message for starting a new chat
+		return `Please continue from the following summary of our previous conversation:\n\n${summary}`
+	}
+
 	async say(
 		type: ClineSay,
 		text?: string,

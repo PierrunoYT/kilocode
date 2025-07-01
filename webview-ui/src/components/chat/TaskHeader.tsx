@@ -35,6 +35,7 @@ export interface TaskHeaderProps {
 	contextTokens: number
 	buttonsDisabled: boolean
 	handleCondenseContext: (taskId: string) => void
+	handleCompactAndNewChat: (taskId: string) => void
 	onClose: () => void
 	// kilocode_change start
 	groupedMessages: (ClineMessage | ClineMessage[])[]
@@ -53,6 +54,7 @@ const TaskHeader = ({
 	contextTokens,
 	buttonsDisabled,
 	handleCondenseContext,
+	handleCompactAndNewChat,
 	onClose,
 	// kilocode_change start
 	groupedMessages,
@@ -79,6 +81,17 @@ const TaskHeader = ({
 				onClick={() => currentTaskItem && handleCondenseContext(currentTaskItem.id)}
 				className="shrink-0 min-h-[20px] min-w-[20px] p-[2px] cursor-pointer disabled:cursor-not-allowed opacity-85 hover:opacity-100 bg-transparent border-none rounded-md">
 				<FoldVertical size={16} />
+			</button>
+		</StandardTooltip>
+	)
+
+	const compactAndNewChatButton = (
+		<StandardTooltip content={t("chat:task.compactAndNewChat", "Compact & New Chat")}>
+			<button
+				disabled={buttonsDisabled}
+				onClick={() => currentTaskItem && handleCompactAndNewChat(currentTaskItem.id)}
+				className="shrink-0 min-h-[20px] min-w-[20px] p-[2px] cursor-pointer disabled:cursor-not-allowed opacity-85 hover:opacity-100 bg-transparent border-none rounded-md">
+				<span className="codicon codicon-add" style={{ fontSize: 14 }} />
 			</button>
 		</StandardTooltip>
 	)
@@ -140,6 +153,7 @@ const TaskHeader = ({
 								}
 							/>
 							{condenseButton}
+							{compactAndNewChatButton}
 							<ShareButton item={currentTaskItem} disabled={buttonsDisabled} />
 							{!!totalCost && <VSCodeBadge>${totalCost.toFixed(2)}</VSCodeBadge>}
 						</div>

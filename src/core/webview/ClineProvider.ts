@@ -1215,6 +1215,28 @@ export class ClineProvider extends EventEmitter<ClineProviderEvents> implements 
 		await this.postMessageToWebview({ type: "condenseTaskContextResponse", text: taskId })
 	}
 
+	/* Compacts a task's message history and starts a new chat with the summary. */
+	async compactAndNewChat(taskId: string) {
+		let task: Task | undefined
+		for (let i = this.clineStack.length - 1; i >= 0; i--) {
+			if (this.clineStack[i].taskId === taskId) {
+				task = this.clineStack[i]
+				break
+			}
+		}
+		if (!task) {
+			throw new Error(`Task with id ${taskId} not found in stack`)
+		}
+		
+		// Get the summary by condensing the context
+		const summary = await task.getSummaryForNewChat()
+		
+		// Start a new chat with the summary as the initial user message
+		await this.initClineWithTask(summary)
+		
+		await this.postMessageToWebview({ type: "compactAndNewChatResponse", text: taskId })
+	}
+
 	// this function deletes a task from task hidtory, and deletes it's checkpoints and delete the task folder
 	async deleteTaskWithId(id: string) {
 		try {

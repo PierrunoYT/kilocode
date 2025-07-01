@@ -184,6 +184,7 @@ export interface WebviewMessage {
 		| "rooCloudSignIn"
 		| "rooCloudSignOut"
 		| "condenseTaskContextRequest"
+		| "compactAndNewChatRequest"
 		| "requestIndexingStatus"
 		| "startIndexing"
 		| "clearIndexData"

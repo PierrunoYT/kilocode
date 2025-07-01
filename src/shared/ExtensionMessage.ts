@@ -101,6 +101,7 @@ export interface ExtensionMessage {
 		| "balanceDataResponse" // kilocode_change
 		| "authenticatedUser"
 		| "condenseTaskContextResponse"
+		| "compactAndNewChatResponse"
 		| "singleRouterModelFetchResponse"
 		| "indexingStatusUpdate"
 		| "indexCleared"

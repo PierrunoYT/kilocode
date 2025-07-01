@@ -282,6 +282,9 @@ export const webviewMessageHandler = async (
 		case "condenseTaskContextRequest":
 			provider.condenseTaskContext(message.text!)
 			break
+		case "compactAndNewChatRequest":
+			provider.compactAndNewChat(message.text!)
+			break
 		case "deleteTaskWithId":
 			provider.deleteTaskWithId(message.text!)
 			break
