@@ -1999,9 +1999,6 @@ export const webviewMessageHandler = async (
 			break
 		}
 		// kilocode_change end
-		case "condenseTaskContextRequest":
-			provider.condenseTaskContext(message.text!)
-			break
 		case "compactAndSummarizeRequest":
 			await provider.compactAndSummarize(message.text!)
 			break

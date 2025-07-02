@@ -1270,6 +1270,8 @@ export class ClineProvider extends EventEmitter<ClineProviderEvents> implements 
 			if (error) {
 				// Show error to user
 				vscode.window.showErrorMessage(`Failed to compact conversation: ${error}`)
+				// Send response to reset UI state
+				await this.postMessageToWebview({ type: "compactAndSummarizeResponse", text: taskId })
 				return
 			}
 
@@ -1290,9 +1292,14 @@ export class ClineProvider extends EventEmitter<ClineProviderEvents> implements 
 			vscode.window.showInformationMessage(
 				"Successfully compacted conversation and started new chat with summary",
 			)
+
+			// Send success response
+			await this.postMessageToWebview({ type: "compactAndSummarizeResponse", text: taskId })
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : String(error)
 			vscode.window.showErrorMessage(`Failed to compact and summarize: ${errorMessage}`)
+			// Send response to reset UI state
+			await this.postMessageToWebview({ type: "compactAndSummarizeResponse", text: taskId })
 		}
 	}
 

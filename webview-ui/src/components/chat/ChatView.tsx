@@ -738,6 +738,14 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 						setIsCondensing(false)
 					}
 					break
+				case "compactAndSummarizeResponse":
+					if (message.text && message.text === currentTaskItem?.id) {
+						if (isCondensing && sendingDisabled) {
+							setSendingDisabled(false)
+						}
+						setIsCondensing(false)
+					}
+					break
 			}
 			// textAreaRef.current is not explicitly required here since React
 			// guarantees that ref will be stable across re-renders, and we're
